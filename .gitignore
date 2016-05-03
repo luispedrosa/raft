@@ -3,3 +3,7 @@
 *~
 libcraft.so
 libcraft.a
+
+CLinkedListQueue/
+spa-client
+spa-server

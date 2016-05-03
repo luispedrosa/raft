@@ -26,7 +26,7 @@ endif
 
 OBJECTS = raft_server.o raft_server_properties.o raft_node.o raft_log.o
 
-all: static shared
+all: static shared spa-client spa-server
 
 clinkedlistqueue:
 	mkdir -p $(LLQUEUE_DIR)/.git
@@ -43,11 +43,13 @@ $(TEST_DIR)/main_test.c:
 	cd $(TEST_DIR) && sh make-tests.sh "test_*.c" > main_test.c && cd ..
 
 .PHONY: shared
-shared: $(OBJECTS)
+shared: libcraft.$(SHAREDEXT)
+libcraft.$(SHAREDEXT): $(OBJECTS)
 	$(CC) $(OBJECTS) $(LDFLAGS) $(CFLAGS) -fPIC $(SHAREDFLAGS) -o libcraft.$(SHAREDEXT)
 
 .PHONY: static
-static: $(OBJECTS)
+static: libcraft.a
+libcraft.a: $(OBJECTS)
 	ar -r libcraft.a $(OBJECTS)
 
 .PHONY: tests
@@ -59,6 +61,12 @@ tests: src/raft_server.c src/raft_server_properties.c src/raft_log.c src/raft_no
 .PHONY: amalgamation
 amalgamation:
 	./scripts/amalgamate.sh > raft.h
+
+spa-client: spa-client.c
+	$(CC) $(CFLAGS) -o $@ $^
+
+spa-server: spa-server.c libcraft.a
+	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
 	@rm -f $(TEST_DIR)/main_test.c *.o $(GCOV_OUTPUT); \
