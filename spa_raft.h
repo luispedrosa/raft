@@ -6,9 +6,9 @@ typedef uint8_t spa_state_t;
 typedef enum {
   GET,
   GET_RESPONSE,
-  ENTRY,
-  ENTRY_RESPONSE,
-  ENTRY_REDIRECT,
+  SET,
+  SET_RESPONSE,
+  REDIRECT,
   REQUEST_VOTE,
   REQUEST_VOTE_RESPONSE,
   APPEND_ENTRIES,
@@ -19,9 +19,8 @@ typedef struct {
   spa_msg_type_t type;
   union {
     spa_state_t get_response;
-    msg_entry_t entry;
-    msg_entry_response_t entry_response;
-    struct sockaddr_in entry_redirect;
+    spa_state_t set;
+    struct sockaddr_in redirect;
     msg_requestvote_t requestvote;
     msg_requestvote_response_t requestvote_response;
     msg_appendentries_t appendentries;
